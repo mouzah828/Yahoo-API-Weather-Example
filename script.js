@@ -2,22 +2,29 @@ $(document).ready(function () {
     function handleWeatherResponse(response, status, xhr) {
         $("#Results").empty();
         var template = $(".weatherTemplate");
-        $("#Results").append("<p>" + response.query.results.channel.description + "</p>")
+        $("#city").val(response.query.results.channel.location.city + ", " + response.query.results.channel.location.region);
+        
         var forecast = response.query.results.channel.item.forecast;
+        var ms = 0;
         forecast.forEach(function (item) {
+            window.setTimeout(function(){
             var clone = template.clone();
             $("#Results").append(clone);
-            clone.find(".weatherHeader").append(item.date);
+            var date = new Date(item.date);
+            clone.find(".weatherHeader").append(date.toLocaleDateString("en-US", { weekday: 'long'}));
             clone.find(".weatherLow").append(item.low);
             clone.find(".weatherHigh").append(item.high);
             clone.find(".weatherText").append(item.text);
-            clone.show();
+            clone.find(".card-img").attr("src", "http://l.yimg.com/a/i/us/we/52/" + item.code + ".gif")
+            clone.slideToggle("fast");
+            }, ms );
+            ms = ms + 100;
         });
     }
     
     function handleLocationResponse(response, status, xhr) {
         $("#city").val(response.query.results.place.locality1.content + ", " + response.query.results.place.admin1.content)
-        console.log(response.query.results);
+        //console.log(response.query.results);
         weatherButtonClicked();
     }
     
@@ -35,7 +42,7 @@ $(document).ready(function () {
     }
 
     function weatherButtonClicked(event) {
-        console.log("You clicked the button");
+        //console.log("You clicked the button");
         var city = $("#city").val();
         if (!city) {
             city = "Fargo, ND";
@@ -53,3 +60,12 @@ $(document).ready(function () {
     
     $("#DetectLocation").click(locationButtonClicked);
 })
+
+function range(x, y) {
+    'use strict';
+    var arr = [x];
+    if (x < y){
+        arr = arr.concat(range(x + 1, y));
+    }
+    return arr;
+}
