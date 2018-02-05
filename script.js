@@ -60,12 +60,3 @@ $(document).ready(function () {
     
     $("#DetectLocation").click(locationButtonClicked);
 })
-
-function range(x, y) {
-    'use strict';
-    var arr = [x];
-    if (x < y){
-        arr = arr.concat(range(x + 1, y));
-    }
-    return arr;
-}
